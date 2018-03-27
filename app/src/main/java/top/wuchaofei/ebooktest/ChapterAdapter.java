@@ -22,6 +22,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ViewHold
     public ChapterAdapter(List<Chapter> chapterList) {
         this.chapterList=chapterList;
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.chapter_item, parent, false);
@@ -56,5 +57,13 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ViewHold
             mView=itemView;
             titleTextView=(TextView)itemView.findViewById(R.id.chapter_title);
         }
+    }
+
+    public List<Chapter> getChapterList() {
+        return chapterList;
+    }
+
+    public void setChapterList(List<Chapter> chapterList) {
+        this.chapterList = chapterList;
     }
 }

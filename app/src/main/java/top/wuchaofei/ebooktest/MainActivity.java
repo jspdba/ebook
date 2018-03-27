@@ -9,11 +9,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Toast;
 
 import org.jsoup.Jsoup;
@@ -28,11 +23,10 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import top.wuchaofei.ebooktest.db.Book;
 import top.wuchaofei.ebooktest.db.Chapter;
 import top.wuchaofei.ebooktest.util.HttpUtil;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity{
     private String bookAddress = "http://www.biquge.tw/86_86745/";
     private String chapterListSelector="#list > dl > dd";
     private Context mContext;
@@ -45,23 +39,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button requestBtn=(Button)findViewById(R.id.request);
-        requestBtn.setOnClickListener(this);
-        mContext = getApplicationContext();
+        mContext = MainActivity.this;
         getBookChapter();
         recyclerView = (RecyclerView) findViewById(R.id.chapter_list);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         chapterAdapter = new ChapterAdapter(chapterList);
         recyclerView.setAdapter(chapterAdapter);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.request:
-                getBookChapter();
-        }
     }
 
     /**
@@ -72,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String bookHtml = prefs.getString("bookHtml", null);
         if(TextUtils.isEmpty(bookHtml)){
             // 开启进度条
-//            showProgressDialog();
+            showProgressDialog();
             // 缓存没有则发送请求获取章节列表
             HttpUtil.sendOkHttpRequest(bookAddress, new Callback() {
                 @Override
@@ -80,8 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            closeProgressDialog();
-                            chapterAdapter.notifyDataSetChanged();
+                            closeProgressDialog();
                             Toast.makeText(mContext, "请求失败="+ e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -89,12 +72,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-//                    closeProgressDialog();
                     String resp = response.body().string();
                     parse2ChapterList(resp);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            closeProgressDialog();
+                            chapterAdapter.setChapterList(chapterList);
                             chapterAdapter.notifyDataSetChanged();
                         }
                     });
@@ -112,11 +96,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Element link = dd.child(0);
                 Chapter chapter=new Chapter();
                 chapter.setTitle(link.text().trim());
-                chapter.setLink(link.attr("href"));
+                chapter.setLink(parsePath(link.attr("href")));
                 chapterList.add(chapter);
             }
         }
-        Log.i("response===", chapterList.toString());
+        this.chapterList = chapterList;
+    }
+
+    /**
+     * 生产path
+     * 增加相对路径及绝对路径的判断
+     * @param path
+     * @return
+     */
+    private String parsePath(String path){
+        path = path.trim();
+        if(path.startsWith("/")){
+            return bookAddress.endsWith("/")?bookAddress+path.substring(1):bookAddress+path;
+        }
+        return path;
     }
 
     /**
