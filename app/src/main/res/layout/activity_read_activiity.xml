@@ -2,14 +2,20 @@
 <FrameLayout
     xmlns:adroid="http://schemas.android.com/apk/res/android"
     adroid:layout_width="match_parent"
-    adroid:layout_height="match_parent">
+    adroid:layout_height="match_parent"
+    adroid:layout_margin="15dp"
+    adroid:background="#8000">
 
     <ScrollView
         adroid:layout_width="match_parent"
         adroid:layout_height="match_parent">
         <TextView
             adroid:id="@+id/chapter_content"
-            adroid:layout_width="match_parent"
-            adroid:layout_height="wrap_content" />
+            adroid:layout_width="wrap_content"
+            adroid:layout_height="wrap_content"
+            adroid:layout_marginLeft="15dp"
+            adroid:layout_marginTop="15dp"
+            adroid:textColor="#fff"
+            adroid:textSize="20sp"/>
     </ScrollView>
 </FrameLayout>
