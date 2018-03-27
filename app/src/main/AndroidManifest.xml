@@ -19,7 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ReadActiviity"></activity>
+        <activity android:name=".ReadActiviity" />
+
+        <service
+            android:name=".service.MyIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package top.wuchaofei.ebooktest;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity{
     private List<Chapter> chapterList =  new ArrayList<Chapter>();
     private ChapterAdapter chapterAdapter;
     RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,25 @@ public class MainActivity extends AppCompatActivity{
             }
         });
         recyclerView.setAdapter(chapterAdapter);
+
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(mContext, "refresh", Toast.LENGTH_SHORT).show();
+                swipeRefresh.setRefreshing(false);
+            }
+        });
+    }
+
+    /**
+     * 多线程下载空章节
+     */
+    private void multyDownVoidChapter(){
+        for (Chapter chapter : chapterList) {
+            // todo 多线程下载任务
+        }
     }
 
     private String parseContent(String resp) {
