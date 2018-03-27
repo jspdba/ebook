@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:adroid="http://schemas.android.com/apk/res/android"
+    adroid:layout_width="match_parent"
+    adroid:layout_height="match_parent">
+
+    <ScrollView
+        adroid:layout_width="match_parent"
+        adroid:layout_height="match_parent">
+        <TextView
+            adroid:id="@+id/chapter_content"
+            adroid:layout_width="match_parent"
+            adroid:layout_height="wrap_content" />
+    </ScrollView>
+</FrameLayout>

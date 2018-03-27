@@ -5,10 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
-
 import top.wuchaofei.ebooktest.db.Chapter;
 
 /**
@@ -19,6 +17,9 @@ import top.wuchaofei.ebooktest.db.Chapter;
 
 public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ViewHolder>{
     private List<Chapter> chapterList;
+    // 点击事件处理器
+    private OnItemClickListener mOnItemClickListener;
+
     public ChapterAdapter(List<Chapter> chapterList) {
         this.chapterList=chapterList;
     }
@@ -26,22 +27,21 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.chapter_item, parent, false);
-        final ViewHolder viewHolder=new ViewHolder(view);
-        viewHolder.titleTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int position=viewHolder.getAdapterPosition();
-                Chapter chapter=chapterList.get(position);
-                Toast.makeText(view.getContext(),"文章标题是 "+chapter.getTitle(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         Chapter chapter = chapterList.get(position);
         holder.titleTextView.setText(chapter.getTitle());
+        if(mOnItemClickListener!=null){
+            holder.titleTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mOnItemClickListener.onClick(position);
+                }
+            });
+        }
     }
 
     @Override
@@ -65,5 +65,12 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ViewHold
 
     public void setChapterList(List<Chapter> chapterList) {
         this.chapterList = chapterList;
+    }
+
+    public interface OnItemClickListener{
+        void onClick(int position);
+    }
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener ){
+        this.mOnItemClickListener = onItemClickListener;
     }
 }
