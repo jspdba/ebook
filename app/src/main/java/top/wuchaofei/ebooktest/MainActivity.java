@@ -1,7 +1,13 @@
 package top.wuchaofei.ebooktest;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +31,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import top.wuchaofei.ebooktest.db.Chapter;
+import top.wuchaofei.ebooktest.service.ThreadDownloadService;
 import top.wuchaofei.ebooktest.util.Constant;
 import top.wuchaofei.ebooktest.util.HttpUtil;
 
@@ -37,7 +44,10 @@ public class MainActivity extends AppCompatActivity{
     private ChapterAdapter chapterAdapter;
     RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefresh;
-
+    private ThreadDownloadService.DownloadBinder downloadBinder;
+    ServiceConnection connection;
+    // service 发送消息给handler
+    public static Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,25 +113,49 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onRefresh() {
                 Toast.makeText(mContext, "refresh", Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(MainActivity.this, ThreadDownloadService.class);
+                startService(intent);// 启动服务
+                downloadBinder.startDownload(5);
                 swipeRefresh.setRefreshing(false);
+            }
+        });
+
+        // 绑定下载服务
+        Intent intent=new Intent(this, ThreadDownloadService.class);
+        connection=new ServiceConnection() {
+
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                Log.d("service", "onServiceConnected");
+                downloadBinder = (ThreadDownloadService.DownloadBinder)iBinder;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+                Log.d("service", "onServiceDisconnected");
+                downloadBinder = null;
+            }
+        };
+        bindService(intent, connection, BIND_AUTO_CREATE);
+
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message message) {
+                if(message.arg1==1){
+                    chapterAdapter.notifyDataSetChanged();
+                    return true;
+                }
+                return false;
             }
         });
     }
 
-    /**
-     * 多线程下载空章节
-     */
-    private void multyDownVoidChapter(){
-        for (Chapter chapter : chapterList) {
-            // todo 多线程下载任务
-        }
-    }
 
-    private String parseContent(String resp) {
+    public static String parseContent(String resp) {
         Document document = Jsoup.parse(resp);
         Elements elements = document.select(Constant.BOOK_CONTENT_SELECTOR);
         String str = elements.html();
-        str = str.replaceAll("&nbsp;", " ").replaceAll("<br>","");
+        str = str.replaceAll("&nbsp;", " ").replaceAll("<br>","").replace("\\?", " ");
         Log.i("content===", str);
         return str==null?str:str.trim();
     }
@@ -230,5 +264,11 @@ public class MainActivity extends AppCompatActivity{
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(connection);
     }
 }

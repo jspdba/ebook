@@ -21,6 +21,10 @@
         </activity>
         <activity android:name=".ReadActiviity" />
 
+        <service
+            android:name=".service.ThreadDownloadService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
