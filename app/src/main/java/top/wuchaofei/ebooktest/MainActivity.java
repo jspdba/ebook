@@ -36,7 +36,7 @@ import top.wuchaofei.ebooktest.util.Constant;
 import top.wuchaofei.ebooktest.util.HttpUtil;
 
 public class MainActivity extends AppCompatActivity{
-    public static final String bookAddress = "http://www.biquge.tw/86_86745/";
+    public static final String bookAddress = "https://www.xs.la/86_86745/";
     public static final int bookId = 1;
     private Context mContext;
     private ProgressDialog progressDialog;

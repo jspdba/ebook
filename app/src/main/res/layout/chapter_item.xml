@@ -8,5 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:textSize="16sp"
-        android:layout_margin="5dp"/>
+        android:layout_margin="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/selector_item_selected"/>
 </LinearLayout>
+    <!--android:focusableInTouchMode="true"-->
+
