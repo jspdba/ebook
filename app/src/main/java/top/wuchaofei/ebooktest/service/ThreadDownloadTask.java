@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -53,35 +54,38 @@ public class ThreadDownloadTask extends AsyncTask<Integer,Integer,Integer>{
         if(chapterList!=null && chapterList.size()>0){
             countDownLatch = new CountDownLatch(chapterList.size());
             final int total = chapterList.size();
+            final OkHttpClient client = new OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build();
+            final Request.Builder builder=new Request.Builder();
 
             for (int i = 0; i < total; i++) {
                 final int finalI = i;
                 executorService.submit(new Runnable() {
                     @Override
                     public void run() {
-                        OkHttpClient client = new OkHttpClient();
                         Chapter chapter = chapterList.get(finalI);
                         Log.i("download===", chapter.getLink());
-                        Request request = new Request.Builder().url(chapter.getLink()).build();
+                        Request request = builder.url(chapter.getLink()).build();
 
                         Response res = null;
                         try {
                             res = client.newCall(request).execute();
-                            String content = MainActivity.parseContent(res.body().string());
-                            if(!TextUtils.isEmpty(content)){
-                                chapter.setContent(content);
-                                chapter.save();
-                                chapter = null;
-                                content = null;
+                            if(res.isSuccessful()){
+                                String content = MainActivity.parseContent(res.body().string());
+                                if(!TextUtils.isEmpty(content)){
+                                    chapter.setContent(content);
+                                    chapter.save();
+                                    content = null;
+                                }
                             }
 
+
                         } catch (IOException e) {
-                            e.printStackTrace();
                             Log.e("threadDownloadTask", e.getMessage());
                         }finally {
                             if(res!=null){
-                                res.body().close();
+                                res.close();
                             }
+                            chapter = null;
                             countDownLatch.countDown();
                             // 计算已下载的百分比
                             int progress = (int) ((finalI+1) * 100 / total);

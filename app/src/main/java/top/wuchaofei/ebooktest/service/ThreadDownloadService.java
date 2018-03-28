@@ -101,14 +101,20 @@ public class ThreadDownloadService extends Service {
             }
         }
     }
+    private PendingIntent pendingIntent;
+    private NotificationCompat.Builder builder;
 
     private Notification getNotification(String title, int progress) {
-        Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        if(pendingIntent==null){
+            Intent intent = new Intent(this, MainActivity.class);
+            pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        }
+        if(builder==null){
+            builder = new NotificationCompat.Builder(this);
+        }
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        builder.setContentIntent(pi);
+        builder.setContentIntent(pendingIntent);
         builder.setContentTitle(title);
         if (progress >= 0) {
             // 当progress大于或等于0时才需显示下载进度
