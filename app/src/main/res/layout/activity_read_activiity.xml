@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-    xmlns:adroid="http://schemas.android.com/apk/res/android"
-    adroid:layout_width="match_parent"
-    adroid:layout_height="match_parent"
-    adroid:layout_margin="15dp"
-    adroid:background="#8000">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    android:background="#8000">
+
+    <ImageView
+        android:id="@+id/bing_pic_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
 
     <ScrollView
-        adroid:layout_width="match_parent"
-        adroid:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <TextView
-            adroid:id="@+id/chapter_content"
-            adroid:layout_width="wrap_content"
-            adroid:layout_height="wrap_content"
-            adroid:layout_marginLeft="15dp"
-            adroid:layout_marginTop="15dp"
-            adroid:textColor="#fff"
-            adroid:textSize="20sp"/>
+            android:id="@+id/chapter_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="20sp"/>
     </ScrollView>
 </FrameLayout>

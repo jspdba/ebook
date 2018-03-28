@@ -5,12 +5,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -59,11 +62,23 @@ public class MainActivity extends AppCompatActivity{
         recyclerView = (RecyclerView) findViewById(R.id.chapter_list);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+        //添加Android自带的分割线
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         chapterAdapter = new ChapterAdapter(chapterList);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int position = prefs.getInt("read_position", 0);
+        recyclerView.scrollToPosition(position);
         chapterAdapter.setOnItemClickListener(new ChapterAdapter.OnItemClickListener() {
             @Override
             public void onClick(final int position) {
                 final Chapter chapter = chapterList.get(position);
+
+                // 保存本次阅读位置
+                SharedPreferences.Editor perf = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+                perf.putInt("read_position", position);
+                perf.apply();
+
                 if(TextUtils.isEmpty(chapter.getContent())){
                     if(!TextUtils.isEmpty(chapter.getLink())){
                         if(TextUtils.isEmpty(chapter.getContent())){
