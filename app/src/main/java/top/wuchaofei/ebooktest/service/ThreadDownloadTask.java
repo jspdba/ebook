@@ -76,11 +76,11 @@ public class ThreadDownloadTask extends AsyncTask<Integer,Integer,Integer>{
                                     chapter.save();
                                     content = null;
                                 }
+                            }else{
+                                Log.d("downloadError", chapter.getTitle()+","+chapter.getLink());
                             }
-
-
                         } catch (IOException e) {
-                            Log.e("threadDownloadTask", e.getMessage());
+                            Log.e("downloadError", chapter.getTitle()+","+e.getMessage());
                         }finally {
                             if(res!=null){
                                 res.close();

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = MainActivity.this;
-        DataSupport.deleteAll(Chapter.class);
+//        DataSupport.deleteAll(Chapter.class);
         getBookChapter();
         recyclerView = (RecyclerView) findViewById(R.id.chapter_list);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
