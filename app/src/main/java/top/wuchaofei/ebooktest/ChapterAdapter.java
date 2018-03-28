@@ -39,6 +39,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ViewHold
                 @Override
                 public void onClick(View view) {
                     mOnItemClickListener.onClick(position);
+//                    notifyItemChanged(position);//刷新当前点击item
                 }
             });
         }

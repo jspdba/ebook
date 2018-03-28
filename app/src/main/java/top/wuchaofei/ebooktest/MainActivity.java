@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity{
         chapterAdapter.setOnItemClickListener(new ChapterAdapter.OnItemClickListener() {
             @Override
             public void onClick(final int position) {
+                // 滚动到当前位置
+//                recyclerView.scrollToPosition(position);
                 final Chapter chapter = chapterList.get(position);
 
                 // 保存本次阅读位置
