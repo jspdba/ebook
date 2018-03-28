@@ -24,6 +24,7 @@ public class ThreadDownloadService extends Service {
     private ThreadDownloadTask threadDownloadTask;
     private DownloadBinder mBinder = new DownloadBinder();
     private Message message;
+    private NotificationManager notificationManager;
     private ThreadDownloadListener threadDownloadListener = new ThreadDownloadListener() {
         @Override
         public void onProgress(int progress) {
@@ -117,7 +118,10 @@ public class ThreadDownloadService extends Service {
         return builder.build();
     }
     private NotificationManager getNotificationManager() {
-        return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if(notificationManager==null) {
+            notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        }
+        return notificationManager;
     }
 
     private void sendMessage(){

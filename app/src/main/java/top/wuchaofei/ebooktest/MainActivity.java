@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity{
     ServiceConnection connection;
     // service 发送消息给handler
     public static Handler handler;
+//    SQLScout 插件
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,14 +115,15 @@ public class MainActivity extends AppCompatActivity{
             public void onRefresh() {
                 Toast.makeText(mContext, "refresh", Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(MainActivity.this, ThreadDownloadService.class);
-                startService(intent);// 启动服务
-                downloadBinder.startDownload(5);
+                chapterList = DataSupport.findAll(Chapter.class);
+                chapterAdapter.notifyDataSetChanged();
+                downloadBinder.startDownload(10);
                 swipeRefresh.setRefreshing(false);
             }
         });
-
         // 绑定下载服务
         Intent intent=new Intent(this, ThreadDownloadService.class);
+        startService(intent);// 启动服务
         connection=new ServiceConnection() {
 
             @Override
@@ -137,7 +139,6 @@ public class MainActivity extends AppCompatActivity{
             }
         };
         bindService(intent, connection, BIND_AUTO_CREATE);
-
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message message) {
@@ -156,7 +157,6 @@ public class MainActivity extends AppCompatActivity{
         Elements elements = document.select(Constant.BOOK_CONTENT_SELECTOR);
         String str = elements.html();
         str = str.replaceAll("&nbsp;", " ").replaceAll("<br>","").replace("\\?", " ");
-        Log.i("content===", str);
         return str==null?str:str.trim();
     }
 

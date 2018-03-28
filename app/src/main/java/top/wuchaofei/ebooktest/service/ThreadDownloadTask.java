@@ -36,21 +36,22 @@ public class ThreadDownloadTask extends AsyncTask<Integer,Integer,Integer>{
     private boolean isPaused = false;
     private CountDownLatch countDownLatch;
 
+    private int lastProgress;
+
     public ThreadDownloadTask(ThreadDownloadListener threadDownloadListener) {
         this.threadDownloadListener = threadDownloadListener;
     }
 
     @Override
     protected Integer doInBackground(Integer... threadCount) {
+
         count = threadCount[0];
         if(executorService==null){
             executorService= Executors.newFixedThreadPool(count);
         }
-        final List<Chapter> chapterList = DataSupport.select("content",null).find(Chapter.class);
+        final List<Chapter> chapterList = DataSupport.where("content is null").find(Chapter.class);
         if(chapterList!=null && chapterList.size()>0){
-            if(countDownLatch==null){
-                countDownLatch=new CountDownLatch(chapterList.size());
-            }
+            countDownLatch = new CountDownLatch(chapterList.size());
             final int total = chapterList.size();
 
             for (int i = 0; i < total; i++) {
@@ -62,22 +63,29 @@ public class ThreadDownloadTask extends AsyncTask<Integer,Integer,Integer>{
                         Chapter chapter = chapterList.get(finalI);
                         Log.i("download===", chapter.getLink());
                         Request request = new Request.Builder().url(chapter.getLink()).build();
+
+                        Response res = null;
                         try {
-                            Response res = client.newCall(request).execute();
+                            res = client.newCall(request).execute();
                             String content = MainActivity.parseContent(res.body().string());
-                            res.body().close();
-                            if(TextUtils.isEmpty(content)){
+                            if(!TextUtils.isEmpty(content)){
                                 chapter.setContent(content);
                                 chapter.save();
+                                chapter = null;
+                                content = null;
                             }
 
                         } catch (IOException e) {
                             e.printStackTrace();
                             Log.e("threadDownloadTask", e.getMessage());
                         }finally {
+                            if(res!=null){
+                                res.body().close();
+                            }
                             countDownLatch.countDown();
                             // 计算已下载的百分比
-                            int progress = (int) ((countDownLatch.getCount()) * 100 / total);
+                            int progress = (int) ((finalI+1) * 100 / total);
+                            Log.d("progress===",""+progress);
                             publishProgress(progress);
                         }
                     }
@@ -117,7 +125,12 @@ public class ThreadDownloadTask extends AsyncTask<Integer,Integer,Integer>{
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        super.onProgressUpdate(values);
+        int progress = values[0];
+
+        if (progress > lastProgress) {
+            threadDownloadListener.onProgress(progress);
+            lastProgress = progress;
+        }
     }
 
     public void pauseDownload() {
