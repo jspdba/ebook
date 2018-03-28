@@ -7,16 +7,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
-import android.os.Environment;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
-
-import java.io.File;
-
-import top.wuchaofei.ebooktest.ChapterAdapter;
 import top.wuchaofei.ebooktest.MainActivity;
 import top.wuchaofei.ebooktest.R;
 

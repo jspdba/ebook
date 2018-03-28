@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = MainActivity.this;
-//        DataSupport.deleteAll(Chapter.class);
+        DataSupport.deleteAll(Chapter.class);
         getBookChapter();
         recyclerView = (RecyclerView) findViewById(R.id.chapter_list);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public boolean handleMessage(Message message) {
                 if(message.arg1==1){
+                    chapterList=DataSupport.findAll(Chapter.class);
                     chapterAdapter.notifyDataSetChanged();
                     return true;
                 }
@@ -229,13 +230,13 @@ public class MainActivity extends AppCompatActivity{
             int count=0;
             for (int i = 0; i < basePath.length(); i++) {
                 char c = basePath.charAt(i);
-                sb.append(c);
                 if(c=='/'){
                     count++;
                     if(count==3){
                         break;
                     }
                 }
+                sb.append(c);
             }
             return sb.toString()+path;
         }
