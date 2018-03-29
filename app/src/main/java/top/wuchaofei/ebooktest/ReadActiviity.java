@@ -3,12 +3,9 @@ package top.wuchaofei.ebooktest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,13 +35,22 @@ public class ReadActiviity extends AppCompatActivity {
         contentView.setText(content);
 
         bingPicImg = (ImageView) findViewById(R.id.bing_pic_img);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        /*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String bingPic = prefs.getString("bing_pic", null);
         if (bingPic != null) {
             Glide.with(this).load(bingPic).into(bingPicImg);
         } else {
             loadBingPic();
-        }
+        }*/
+
+       /* final SwipeRefreshLayout swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.chapter_swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadBingPic();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });*/
     }
 
     public static Intent starti(Context mContext, String title, String content){

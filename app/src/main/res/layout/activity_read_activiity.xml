@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="5dp"
-    android:background="#8000">
+    android:background="#979995"
+    >
 
     <ImageView
         android:id="@+id/bing_pic_img"
@@ -19,7 +20,7 @@
             android:id="@+id/chapter_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#fff"
+            android:textColor="#000000"
             android:textSize="20sp"/>
     </ScrollView>
 </FrameLayout>
