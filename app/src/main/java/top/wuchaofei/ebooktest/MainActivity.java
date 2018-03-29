@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onRefresh() {
                 Toast.makeText(mContext, "refresh", Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent(MainActivity.this, ThreadDownloadService.class);
                 chapterList = DataSupport.findAll(Chapter.class);
                 chapterAdapter.notifyDataSetChanged();
                 downloadBinder.startDownload(10);
@@ -288,5 +287,12 @@ public class MainActivity extends AppCompatActivity{
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
+    }
+
+    public static Intent starti(Context mContext, String bookTitle, String bookUrl){
+        Intent intent = new Intent(mContext, MainActivity.class);
+        intent.putExtra("bookTitle", bookTitle);
+        intent.putExtra("bookUrl", bookUrl);
+        return intent;
     }
 }

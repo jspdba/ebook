@@ -3,7 +3,7 @@
 
     <dbname value="ebook" />
 
-    <version value="1" />
+    <version value="2" />
 
     <list>
         <mapping class="top.wuchaofei.ebooktest.db.Book" />
