@@ -37,10 +37,11 @@ public class BookIndexActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_index);
-        updateBook();
+        initBook();
+//        updateBook();
         RecyclerView bookRecyclerView = (RecyclerView) findViewById(R.id.book_recyclerView);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        StaggeredGridLayoutManager layoutManager =new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+//        StaggeredGridLayoutManager layoutManager =new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         bookRecyclerView.setLayoutManager(layoutManager);
         //添加Android自带的分割线
 //        bookRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -58,21 +59,24 @@ public class BookIndexActivity extends AppCompatActivity {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                bookList = DataSupport.findAll(Book.class);
-                bookAdapter.notifyDataSetChanged();
+                updateBook();
                 swipeRefresh.setRefreshing(false);
             }
         });
     }
 
-    private void updateBook() {
+    private void initBook() {
         bookList = DataSupport.findAll(Book.class);
         // 初始化一本书
         if(bookList==null || bookList.size()==0){
             Book book=new Book();
             book.setUrl("https://www.xs.la/86_86745/");
             bookList.add(book);
+            updateBook();
         }
+    }
+
+    private void updateBook() {
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build();
         Request.Builder builder=new Request.Builder();
         for (final Book book : bookList) {
@@ -119,10 +123,12 @@ public class BookIndexActivity extends AppCompatActivity {
                             if("og:novel:latest_chapter_url".equalsIgnoreCase(property)){
                                 book.setLastChapterUrl(content);
                             }
-                            book.save();
-                            Log.i("bookId", ""+book.getId());
+
                         }
                     }
+
+                    book.save();
+                    Log.d("book===", book.toString());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

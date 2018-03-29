@@ -43,6 +43,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>{
         Book book = bookList.get(position);
         Glide.with(mContext).load(book.getLogo()).into(holder.logoImageView);
         holder.titleTextView.setText(book.getTitle());
+        holder.bookLastChapterView.setText(book.getLastChapterTitle());
         if(mOnItemClickListener!=null){
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -63,11 +64,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>{
 
         ImageView logoImageView;
         TextView titleTextView;
+        TextView bookLastChapterView;
         public ViewHolder(View itemView) {
             super(itemView);
             mView=itemView;
             logoImageView=(ImageView)itemView.findViewById(R.id.book_logo);
             titleTextView=(TextView)itemView.findViewById(R.id.book_title);
+            bookLastChapterView = (TextView) itemView.findViewById(R.id.book_last_chapter);
         }
     }
 

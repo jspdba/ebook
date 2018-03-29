@@ -98,4 +98,20 @@ public class Book extends DataSupport {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", category='" + category + '\'' +
+                ", description='" + description + '\'' +
+                ", url='" + url + '\'' +
+                ", logo='" + logo + '\'' +
+                ", lastUpdateTime='" + lastUpdateTime + '\'' +
+                ", lastChapterTitle='" + lastChapterTitle + '\'' +
+                ", lastChapterUrl='" + lastChapterUrl + '\'' +
+                '}';
+    }
 }
