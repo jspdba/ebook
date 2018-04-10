@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         mContext = MainActivity.this;
 //        DataSupport.deleteAll(Chapter.class);
-        getBookChapter();
+        initBookChapters();
         recyclerView = (RecyclerView) findViewById(R.id.chapter_list);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(final int position) {
                 // 滚动到当前位置
 //                recyclerView.scrollToPosition(position);
+                // TODO: 2018/4/10 错误检查 有可能数据已经删除
                 final Chapter chapter = chapterList.get(position);
 
                 // 保存本次阅读位置
@@ -180,9 +181,10 @@ public class MainActivity extends AppCompatActivity{
     /**
      * 远程获取章节列表
      */
-    private void getBookChapter() {
+    private void initBookChapters() {
         chapterList = DataSupport.findAll(Chapter.class);
-        if(chapterList == null || chapterList.size()==0){
+        DataSupport.deleteAll(Chapter.class, null);
+        if(chapterList == null || chapterList.size()==0 || updateLastTime()){
             // 开启进度条
             showProgressDialog();
             // 缓存没有则发送请求获取章节列表
@@ -201,7 +203,7 @@ public class MainActivity extends AppCompatActivity{
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String resp = response.body().string();
-                    parse2ChapterList(resp);
+                    updateBookChapters(resp);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -215,22 +217,54 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private void parse2ChapterList(String resp) {
+    /**
+     * 是否需要更新
+     * @return true需要更新，false不需要更新
+     */
+    private boolean updateLastTime() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        long lastUpdateTime = prefs.getLong("lastUpdateTime", 0);
+        long currentTime = System.currentTimeMillis();
+
+        // 一天更新一次
+        if(currentTime-lastUpdateTime>1000*60*60*24){
+            SharedPreferences.Editor perf = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+            perf.putLong("lastUpdateTime", currentTime);
+            perf.apply();
+            return true;
+        }
+        return false;
+
+    }
+
+    private void updateBookChapters(String resp) {
         Document document = Jsoup.parse(resp);
         Elements elements = document.select(Constant.BOOK_CHAPTER_SELECTOR);
-        List<Chapter>  chapterList=new ArrayList<Chapter>();
+        List<Chapter>  onLineChapterList = new ArrayList<Chapter>();
+        int index = 0;
         for (Element dd : elements) {
             if(dd.childNodeSize()>0){
                 Element link = dd.child(0);
-                Chapter chapter=new Chapter();
+                Chapter chapter = new Chapter();
                 chapter.setBookId(bookId);
+                chapter.setOrderIndex(index++);
                 chapter.setTitle(link.text().trim());
                 chapter.setLink(parsePath(bookAddress, link.attr("href")));
-                chapter.save();
-                chapterList.add(chapter);
+                onLineChapterList.add(chapter);
             }
         }
-        this.chapterList = chapterList;
+        if(onLineChapterList.size()>0 && onLineChapterList.size()>this.chapterList.size()){
+            if(this.chapterList.size()==0){
+                DataSupport.saveAll(onLineChapterList);
+            }else{
+                List<Chapter> newChapterList = new ArrayList<Chapter>();
+                for (int i = this.chapterList.size(); i < onLineChapterList.size() ; i++) {
+                    newChapterList.add(onLineChapterList.get(i));
+                }
+                DataSupport.saveAll(newChapterList);
+            }
+        }
+        this.chapterList = onLineChapterList;
     }
 
     /**

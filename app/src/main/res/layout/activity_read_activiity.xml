@@ -4,16 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="5dp"
-    android:background="#979995"
-    >
+    android:background="#979995">
 
+    <!--<top.wuchaofei.ebooktest.layout.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />-->
     <ImageView
         android:id="@+id/bing_pic_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <ScrollView
+     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView

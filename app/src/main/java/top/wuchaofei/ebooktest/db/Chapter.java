@@ -11,6 +11,7 @@ import org.litepal.crud.DataSupport;
 public class Chapter extends DataSupport {
     private int id;
     private int bookId;
+    private int orderIndex;
     private String title;
     private String content;
     private String link;
@@ -55,11 +56,20 @@ public class Chapter extends DataSupport {
         this.link = link;
     }
 
+    public int getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(int orderIndex) {
+        this.orderIndex = orderIndex;
+    }
+
     @Override
     public String toString() {
         return "Chapter{" +
                 "id=" + id +
                 ", bookId=" + bookId +
+                ", orderIndex=" + orderIndex +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", link='" + link + '\'' +

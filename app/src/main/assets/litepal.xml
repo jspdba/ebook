@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
-
     <dbname value="ebook" />
-
-    <version value="2" />
-
+    <version value="5" />
     <list>
         <mapping class="top.wuchaofei.ebooktest.db.Book" />
         <mapping class="top.wuchaofei.ebooktest.db.Chapter" />
     </list>
-
 </litepal>

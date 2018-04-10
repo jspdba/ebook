@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import top.wuchaofei.ebooktest.db.Book;
-import top.wuchaofei.ebooktest.db.Chapter;
 
 /**
  * 章节列表
