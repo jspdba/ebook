@@ -74,9 +74,10 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(final int position) {
                 // 滚动到当前位置
 //                recyclerView.scrollToPosition(position);
-                // TODO: 2018/4/10 错误检查 有可能数据已经删除
-                final Chapter chapter = chapterList.get(position);
-
+                final Chapter chapter = chapterList.size()-1>=position?chapterList.get(position):null;
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                int read_position = prefs.getInt("read_position", 0);
+                final boolean isLastPosition = read_position==position?true:false;
                 // 保存本次阅读位置
                 SharedPreferences.Editor perf = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
                 perf.putInt("read_position", position);
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity{
                     if(!TextUtils.isEmpty(chapter.getLink())){
                         if(TextUtils.isEmpty(chapter.getContent())){
                             showProgressDialog();
+
                             HttpUtil.sendOkHttpRequest(chapter.getLink(), new Callback() {
                                 @Override
                                 public void onFailure(Call call, IOException e) {
@@ -110,17 +112,17 @@ public class MainActivity extends AppCompatActivity{
                                         public void run() {
                                             closeProgressDialog();
                                             chapterAdapter.notifyDataSetChanged();
-                                            startActivity(ReadActiviity.starti(mContext,chapter.getTitle(),chapter.getContent()));
+                                            startActivity(ReadActiviity.starti(mContext,chapter.getTitle(),chapter.getContent(), isLastPosition));
                                         }
                                     });
                                 }
                             });
                         }else{
-                            startActivity(ReadActiviity.starti(mContext,chapter.getTitle(),chapter.getContent()));
+                            startActivity(ReadActiviity.starti(mContext,chapter.getTitle(),chapter.getContent(),isLastPosition));
                         }
                     }
                 }else{
-                    startActivity(ReadActiviity.starti(mContext,chapter.getTitle(),chapter.getContent()));
+                    startActivity(ReadActiviity.starti(mContext,chapter.getTitle(),chapter.getContent(),isLastPosition));
                 }
             }
         });
