@@ -185,8 +185,9 @@ public class MainActivity extends AppCompatActivity{
      */
     private void initBookChapters() {
         chapterList = DataSupport.findAll(Chapter.class);
-        DataSupport.deleteAll(Chapter.class, null);
-        if(chapterList == null || chapterList.size()==0 || updateLastTime()){
+//        DataSupport.deleteAll(Chapter.class, null);
+//        if(chapterList == null || chapterList.size()==0 || updateLastTime()){
+        if(chapterList == null || chapterList.size()==0){
             // 开启进度条
             showProgressDialog();
             // 缓存没有则发送请求获取章节列表
@@ -205,6 +206,7 @@ public class MainActivity extends AppCompatActivity{
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String resp = response.body().string();
+                    Log.d("resp===",resp);
                     updateBookChapters(resp);
                     runOnUiThread(new Runnable() {
                         @Override
