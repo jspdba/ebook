@@ -208,14 +208,7 @@ public class MainActivity extends AppCompatActivity{
                     String resp = response.body().string();
                     Log.d("resp===",resp);
                     updateBookChapters(resp);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            closeProgressDialog();
-                            chapterAdapter.setChapterList(chapterList);
-                            chapterAdapter.notifyDataSetChanged();
-                        }
-                    });
+
                 }
             });
         }
@@ -269,6 +262,15 @@ public class MainActivity extends AppCompatActivity{
             }
         }
         this.chapterList = onLineChapterList;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                closeProgressDialog();
+                chapterAdapter.setChapterList(chapterList);
+                chapterAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     /**
