@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
+    <!--android:background="@drawable/bg_selector"-->
 
     <TextView
         android:id="@+id/chapter_title"
@@ -9,7 +11,8 @@
         android:layout_height="24dp"
         android:textSize="16sp"
         android:layout_margin="5dp"
-        android:background="@drawable/selector_item_selected"/>
+        />
+    <!--android:background="@drawable/selector_item_selected"-->
 </LinearLayout>
     <!--android:clickable="true"-->
     <!--android:focusable="true"-->

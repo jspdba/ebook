@@ -27,6 +27,10 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.chapter_item, parent, false);
+        // 添加点击效果
+       /*TypedValue typedValue = new TypedValue();
+        parent.getContext().getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
+        view.setBackgroundResource(typedValue.resourceId);*/
         return new ViewHolder(view);
     }
 
