@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity{
         chapterAdapter.setOnItemClickListener(new ChapterAdapter.OnItemClickListener() {
             @Override
             public void onClick(final int position) {
-                // 滚动到当前位置
-//                recyclerView.scrollToPosition(position);
                 final Chapter chapter = chapterList.size()-1>=position?chapterList.get(position):null;
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 int read_position = prefs.getInt("read_position", 0);
@@ -82,6 +80,12 @@ public class MainActivity extends AppCompatActivity{
                 SharedPreferences.Editor perf = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
                 perf.putInt("read_position", position);
                 perf.apply();
+//                滚动到点击位置
+                if (position != -1) {
+                    recyclerView.scrollToPosition(position);
+                    LinearLayoutManager mLayoutManager =(LinearLayoutManager) recyclerView.getLayoutManager();
+                    mLayoutManager.scrollToPositionWithOffset(position, 0);
+                }
 
                 if(TextUtils.isEmpty(chapter.getContent())){
                     if(!TextUtils.isEmpty(chapter.getLink())){
